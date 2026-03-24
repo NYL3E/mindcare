@@ -12,6 +12,7 @@ app/.env*.local
 # Cloudflare
 app/.vercel/
 app/.wrangler/
+app/.open-next/
 
 # OS
 .DS_Store
