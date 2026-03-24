@@ -1,0 +1,21 @@
+# Dependencies
+app/node_modules/
+
+# Build
+app/.next/
+app/out/
+
+# Env — NE PAS committer les clés API
+app/.env.local
+app/.env*.local
+
+# Cloudflare
+app/.vercel/
+app/.wrangler/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
