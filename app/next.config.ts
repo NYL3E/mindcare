@@ -1,9 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // Requis pour Cloudflare Pages
-  // @ts-expect-error — option spécifique à @cloudflare/next-on-pages
-  experimental: { esmExternals: true },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
