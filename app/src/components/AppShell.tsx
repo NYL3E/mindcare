@@ -45,8 +45,7 @@ export default function AppShell({ children }: AppShellProps) {
     }
   }, [authLoading, user, router]);
 
-  if (authLoading) return <LoadingScreen />;
-  if (!user) return null;
+  if (authLoading || !user) return <LoadingScreen />;
 
   return (
     <div className="min-h-screen bg-surface-soft">

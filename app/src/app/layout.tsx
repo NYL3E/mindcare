@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito, Fredoka } from "next/font/google";
 import "./globals.css";
 import { MindCareProvider } from "@/context/MindCareContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const nunito = Nunito({
   variable: "--font-sans",
@@ -29,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${nunito.variable} ${fredoka.variable}`}>
       <body className="min-h-dvh bg-surface-soft text-text-primary font-sans antialiased">
-        <MindCareProvider>{children}</MindCareProvider>
+        <ErrorBoundary>
+          <MindCareProvider>{children}</MindCareProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
