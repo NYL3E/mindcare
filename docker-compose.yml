@@ -1,0 +1,19 @@
+# MindCare — lancement en environnement vierge.
+# Prérequis : Docker + un fichier .env (copier .env.example).
+# Usage :  docker compose up --build   →  http://localhost:3000
+
+services:
+  mindcare:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      args:
+        # NEXT_PUBLIC_* doivent être présents au build (inlinés dans le bundle client)
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    ports:
+      - "3000:3000"
+    environment:
+      # Secret serveur (route /api/chat) — disponible au runtime uniquement
+      GROQ_API_KEY: ${GROQ_API_KEY}
+    restart: unless-stopped
