@@ -8,7 +8,9 @@
     "build:cloudflare": "opennextjs-cloudflare build",
     "start": "next start",
     "lint": "eslint",
-    "preview": "opennextjs-cloudflare build && wrangler dev"
+    "preview": "opennextjs-cloudflare build && wrangler dev",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.100.0",
@@ -28,6 +30,7 @@
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vitest": "^4.1.9",
     "wrangler": "^4.76.0"
   }
 }

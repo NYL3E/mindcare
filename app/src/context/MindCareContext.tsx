@@ -10,6 +10,12 @@ import {
   type ReactNode,
 } from "react";
 import type { User } from "@supabase/supabase-js";
+import {
+  calculateStreak,
+  canJoinActivity,
+  mapRequestToFriend,
+  moodDateKey,
+} from "@/lib/rules";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -176,23 +182,7 @@ const defaultFriendRequests = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function calculateStreak(moodHistory: MoodEntry[]): number {
-  if (moodHistory.length === 0) return 0;
-  const sorted = [...moodHistory].map((e) => e.date).sort().reverse();
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
-  const mostRecent = new Date(sorted[0]); mostRecent.setHours(0, 0, 0, 0);
-  if (mostRecent.getTime() !== today.getTime() && mostRecent.getTime() !== yesterday.getTime()) return 0;
-  let streak = 1;
-  for (let i = 1; i < sorted.length; i++) {
-    const cur = new Date(sorted[i]); cur.setHours(0, 0, 0, 0);
-    const prev = new Date(sorted[i - 1]); prev.setHours(0, 0, 0, 0);
-    const diff = (prev.getTime() - cur.getTime()) / (1000 * 60 * 60 * 24);
-    if (diff === 1) streak++;
-    else if (diff > 1) break;
-  }
-  return streak;
-}
+// calculateStreak est désormais importé depuis @/lib/rules (testé unitairement).
 
 function ts(): string {
   const now = new Date();
@@ -426,7 +416,7 @@ export function MindCareProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const saveMood = useCallback((entry: Omit<MoodEntry, "date">) => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = moodDateKey();
     setMoodHistory((prev) => {
       const filtered = prev.filter((e) => e.date !== today);
       return [...filtered, { ...entry, date: today }];
@@ -436,7 +426,7 @@ export function MindCareProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const todayMood = moodHistory.find((e) => e.date === new Date().toISOString().split("T")[0]) ?? null;
+  const todayMood = moodHistory.find((e) => e.date === moodDateKey()) ?? null;
 
   const addMessage = useCallback((text: string, isUser: boolean) => {
     setMessages((prev) => {
@@ -463,7 +453,7 @@ export function MindCareProvider({ children }: { children: ReactNode }) {
   const joinActivity = useCallback((id: number) => {
     setActivities((prev) => {
       const updated = prev.map((a) => {
-        if (a.id !== id || a.joined || a.participants >= a.maxParticipants) return a;
+        if (a.id !== id || !canJoinActivity(a)) return a;
         const next = { ...a, joined: true, participants: a.participants + 1 };
         if (user && (a as ActivityData & { _uuid?: string })._uuid) {
           supabase.from("activities").update({ joined: true, participants: next.participants }).eq("id", (a as ActivityData & { _uuid?: string })._uuid!).then(() => {});
@@ -480,7 +470,7 @@ export function MindCareProvider({ children }: { children: ReactNode }) {
       if (req) {
         setFriends((prevFriends) => {
           const newId = prevFriends.length > 0 ? Math.max(...prevFriends.map((f) => f.id)) + 1 : 1;
-          const newFriend: FriendData = { id: newId, name: req.name, initial: req.initial, online: false, moodIcon: "smile", gradientFrom: req.gradientFrom, gradientTo: req.gradientTo };
+          const newFriend: FriendData = mapRequestToFriend(req, newId);
           if (user) {
             const uuid = (req as FriendRequest & { _uuid?: string })._uuid;
             if (uuid) supabase.from("friend_requests").delete().eq("id", uuid).then(() => {});

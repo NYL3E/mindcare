@@ -2,42 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useMindCare } from "@/context/MindCareContext";
-
-function buildSystemPrompt(ai: {
-  name: string;
-  personality: string;
-  tutoiement: boolean;
-  decontracte: boolean;
-}, moodContext: string): string {
-  const personalityMap: Record<string, string> = {
-    optimiste:
-      "Tu es toujours positif et encourageant. Tu cherches le bon côté des choses et tu motives ton interlocuteur.",
-    zen: "Tu es calme et réfléchi. Tu guides avec douceur vers la sérénité et la pleine conscience.",
-    empathique:
-      "Tu es très à l'écoute des émotions. Tu valides les sentiments et tu fais preuve de compréhension profonde.",
-    drole:
-      "Tu utilises l'humour bienveillant pour remonter le moral. Tu restes léger tout en étant attentif.",
-  };
-
-  const personality = personalityMap[ai.personality] ?? personalityMap.empathique;
-  const forme = ai.tutoiement ? "tu tutoies" : "tu vouvoies";
-  const style = ai.decontracte
-    ? "ton style est décontracté et amical"
-    : "ton style est poli et formel";
-
-  return `Tu es ${ai.name}, un(e) ami(e) IA bienveillant(e) dans l'application MindCare, dédiée au bien-être mental et à la lutte contre la solitude.
-
-${personality}
-
-Règles :
-- ${forme} ton interlocuteur, et ${style}.
-- Tu réponds TOUJOURS en français.
-- Tes réponses sont courtes (2-4 phrases max), chaleureuses et naturelles.
-- Tu ne donnes JAMAIS de diagnostic médical. Si la personne semble en danger, tu l'encourages à appeler un professionnel.
-- Tu peux suggérer des activités de l'app (yoga, randonnée, jeux de société, etc.) quand c'est pertinent.
-- Tu te souviens du contexte de la conversation.
-${moodContext}`;
-}
+import { buildSystemPrompt, windowChatHistory } from "@/lib/rules";
 
 export function useGrok() {
   const ctx = useMindCare();
@@ -81,10 +46,7 @@ export function useGrok() {
       historyRef.current.push({ role: "user", content: userText });
 
       // Keep history manageable (system + last 20 messages)
-      if (historyRef.current.length > 22) {
-        const system = historyRef.current[0];
-        historyRef.current = [system, ...historyRef.current.slice(-20)];
-      }
+      historyRef.current = windowChatHistory(historyRef.current);
 
       try {
         const response = await fetch("/api/chat", {
