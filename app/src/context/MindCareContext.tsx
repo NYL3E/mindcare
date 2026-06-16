@@ -147,7 +147,7 @@ interface MindCareState {
 // ─── Default data (used for new accounts) ────────────────────────────────────
 
 const defaultAI: AISettings = {
-  name: "Luna",
+  name: "Sarah",
   personality: "empathique",
   color: "pink",
   tutoiement: true,
@@ -221,7 +221,7 @@ export function MindCareProvider({ children }: { children: ReactNode }) {
       supabase.from("privacy_prefs").insert({ user_id: userId }),
       supabase.from("user_settings").insert({ user_id: userId }),
       supabase.from("chat_messages").insert([
-        { user_id: userId, text: `Salut ${displayName} ! Je suis Luna, ton amie IA. Comment tu vas aujourd'hui ?`, is_user: false, ts: now, seq: 1 },
+        { user_id: userId, text: `Salut ${displayName} ! Je suis Sarah, ton amie IA. Comment tu vas aujourd'hui ?`, is_user: false, ts: now, seq: 1 },
       ]),
       supabase.from("activities").insert(
         defaultActivities.map((a) => ({ user_id: userId, title: a.title, category: a.category, category_icon: a.categoryIcon, description: a.description, participants: a.participants, max_participants: a.maxParticipants, location: a.location, date_label: a.date, is_public: a.isPublic, host_name: a.hostName, joined: false }))

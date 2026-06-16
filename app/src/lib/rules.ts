@@ -2,7 +2,7 @@
  * Règles métier pures de MindCare.
  *
  * Ces fonctions concentrent la logique des cas d'usage (check-in, activités,
- * cercle social, chat Luna) hors de tout composant React, afin d'être
+ * cercle social, chat Sarah) hors de tout composant React, afin d'être
  * testables unitairement (voir __tests__/rules.test.ts). Elles sont importées
  * par MindCareContext et useGrok : ce sont les règles réellement exécutées par
  * l'application, pas une copie.
@@ -101,7 +101,7 @@ export function mapRequestToFriend(req: RequestLike, newId: number): FriendLike 
   };
 }
 
-// ─── Chat Luna (Pilier 2) ───────────────────────────────────────────────────────
+// ─── Chat Sarah (Pilier 2) ───────────────────────────────────────────────────────
 
 /**
  * Fenêtre glissante envoyée à l'IA : on garde le message système (index 0) puis
@@ -112,7 +112,7 @@ export function windowChatHistory<T>(history: T[], max = 20): T[] {
   return [history[0], ...history.slice(-max)];
 }
 
-/** Construit le system prompt de Luna selon sa personnalité, sa forme d'adresse et le contexte d'humeur. */
+/** Construit le system prompt de Sarah selon sa personnalité, sa forme d'adresse et le contexte d'humeur. */
 export function buildSystemPrompt(ai: AILike, moodContext: string): string {
   const personalityMap: Record<string, string> = {
     optimiste:

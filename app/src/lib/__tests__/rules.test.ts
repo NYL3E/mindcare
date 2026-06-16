@@ -82,12 +82,12 @@ describe("Pilier 4 — Cercle social", () => {
   });
 });
 
-describe("Pilier 2 — Luna (chat IA)", () => {
-  const ai = { name: "Luna", personality: "empathique", tutoiement: true, decontracte: true };
+describe("Pilier 2 — Sarah (chat IA)", () => {
+  const ai = { name: "Sarah", personality: "empathique", tutoiement: true, decontracte: true };
 
   it("le system prompt inclut le nom, le tutoiement et la règle non-médicale", () => {
     const prompt = buildSystemPrompt(ai, "");
-    expect(prompt).toContain("Luna");
+    expect(prompt).toContain("Sarah");
     expect(prompt).toContain("tu tutoies");
     expect(prompt).toContain("JAMAIS de diagnostic médical");
   });

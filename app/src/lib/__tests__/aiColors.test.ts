@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { getAIColors, AI_COLOR_OPTIONS } from "../aiColors";
 
-describe("Personnalisation de Luna — couleurs (US-2.3)", () => {
+describe("Personnalisation de Sarah — couleurs (US-2.3)", () => {
   it("renvoie la palette correspondant à l'identifiant", () => {
     expect(getAIColors("violet")).toMatchObject({ id: "violet", from: "#9059ff" });
   });
