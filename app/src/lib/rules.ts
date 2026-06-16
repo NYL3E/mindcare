@@ -143,3 +143,34 @@ Règles :
 - Tu te souviens du contexte de la conversation.
 ${moodContext}`;
 }
+
+/**
+ * Construit la charge utile envoyée à l'IA, à exécuter CÔTÉ SERVEUR.
+ * Sécurité : on ignore tout message de rôle "system" envoyé par le client
+ * (anti-injection de prompt — le cadre éthique ne peut pas être réécrit par
+ * l'appelant), on reconstruit le system prompt, et on borne l'historique.
+ */
+export function buildChatPayload(
+  rawMessages: unknown,
+  ai: Partial<AILike> | undefined,
+  mood: unknown,
+): ChatTurn[] {
+  const turns: ChatTurn[] = (Array.isArray(rawMessages) ? rawMessages : [])
+    .filter(
+      (m): m is ChatTurn =>
+        !!m && typeof m === "object" &&
+        ((m as ChatTurn).role === "user" || (m as ChatTurn).role === "assistant") &&
+        typeof (m as ChatTurn).content === "string",
+    )
+    .map((m) => ({ role: m.role, content: m.content }));
+
+  const safeAi: AILike = {
+    name: ai?.name ?? "Sarah",
+    personality: ai?.personality ?? "empathique",
+    tutoiement: ai?.tutoiement ?? true,
+    decontracte: ai?.decontracte ?? true,
+  };
+  const moodContext = typeof mood === "string" ? mood : "";
+  const system: ChatTurn = { role: "system", content: buildSystemPrompt(safeAi, moodContext) };
+  return windowChatHistory([system, ...turns], 20);
+}
