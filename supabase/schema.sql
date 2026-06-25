@@ -14,7 +14,7 @@ create table if not exists public.profiles (
 -- 2. AI Settings
 create table if not exists public.ai_settings (
   user_id uuid references auth.users on delete cascade primary key,
-  name text not null default 'Luna',
+  name text not null default 'Sarah',
   personality text not null default 'empathique',
   color text not null default 'pink',
   tutoiement boolean not null default true,

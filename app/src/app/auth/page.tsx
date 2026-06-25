@@ -29,7 +29,7 @@ export default function AuthPage() {
     try {
       if (mode === "signup") {
         if (!name.trim()) { setError("Entre ton prénom."); setLoading(false); return; }
-        if (password.length < 6) { setError("Le mot de passe doit faire au moins 6 caractères."); setLoading(false); return; }
+        if (password.length < 8) { setError("Le mot de passe doit faire au moins 8 caractères."); setLoading(false); return; }
 
         const { error } = await supabase.auth.signUp({
           email,
