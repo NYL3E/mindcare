@@ -25,6 +25,11 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          # C4.5 — active le test d'intégration de la connexion Supabase
+          # (réutilise les secrets déjà présents pour le build).
+          SUPABASE_IT_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_IT_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Build
         run: npm run build:cloudflare
